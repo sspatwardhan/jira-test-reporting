@@ -1,0 +1,112 @@
+{
+    "created": 1744191361.013024,
+    "duration": 110.89298629760742,
+    "exitcode": 1,
+    "root": "/Users/saurabhpatwardhan/work/sourcecodes/tuskai-api-automated-testing",
+    "environment": {},
+    "summary": {
+        "passed": 1,
+        "failed": 2,
+        "total": 3,
+        "collected": 109,
+        "deselected": 106
+    },
+    "tests": [
+        {
+            "nodeid": "api_tests/Test_Pilot/test_jira_reporting_scenarios.py::Test_JIRA_Reporting_Scenarios::test_jira_reporting_test_passed",
+            "lineno": 30,
+            "outcome": "passed",
+            "keywords": [
+                "jira_reporting_tool_test_1"
+            ],
+            "setup": {
+                "duration": 2.0469269170134794,
+                "outcome": "passed"
+            },
+            "call": {
+                "duration": 2.2102551250136457,
+                "outcome": "passed"
+            },
+            "teardown": {
+                "duration": 0.002265042014187202,
+                "outcome": "passed"
+            }
+        },
+        {
+            "nodeid": "jira_test/Test_Pilot/test_jira_reporting_scenarios.py::Test_JIRA_Reporting_Scenarios::test_jira_reporting_test_failed",
+            "lineno": 30,
+            "outcome": "failed",
+            "keywords": [
+                "jira_reporting_tool_test_1"
+            ],
+            "setup": {
+                "duration": 1.582380292005837,
+                "outcome": "passed"
+            },
+            "call": {
+                "duration": 8.930595249985345,
+                "outcome": "failed",
+                "crash": {
+                    "path": "/Users/saurabhpatwardhan/work/sourcecodes/tuskai-api-automated-testing/core_utils/asserts.py",
+                    "lineno": 15,
+                    "message": "AssertionError: Failed assertion that 4 is equals 0. \nFindings : Reason -  Findings with incorrect defense classification:\nFinding ID: 305dc3ea-1cd5-5b89-8aa0-7e20c7a8c21e | Finding Title: CVE-2017-0004\nFinding ID: a11409ee-8ed4-52e1-813e-dc5f9ab52437 | Finding Title: CVE-2016-7237\nFinding ID: 857ed91d-c270-58ef-a0ca-751748a5516a | Finding Title: CVE-2012-1856\nFinding ID: 1c812de7-7f7e-54aa-b183-13c01d5fdf56 | Finding Title: CVE-2021-27101\nReport saved in test-reports/defense-classification-validation-report-<env>-aa140eec-a905-4053-9ccb-e0f6133baaa1.csv"
+                },
+                "traceback": [
+                    {
+                        "path": "api_tests/Finding_Hub/test_finding_hub_data_integrity.py",
+                        "lineno": 15,
+                        "message": "in test_validate_defense_classification_accuracy"
+                    },
+                    {
+                        "path": "core_utils/asserts.py",
+                        "lineno": 15,
+                        "message": "in assert_equals"
+                    }
+                ],
+                "longrepr": "api_tests/Finding_Hub/test_finding_hub_data_integrity.py:15: in test_validate_defense_classification_accuracy\n    Asserts.assert_equals(len(itemsWithError),0, f\"\"\"\\n{customErrorPrefix} Findings with incorrect {classificationCategory} classification:\\n{\"\\n\".join(itemsWithError)}\ncore_utils/asserts.py:15: in assert_equals\n    assert val1 == val2, default_message\nE   AssertionError: Failed assertion that 4 is equals 0. \nE   Findings : Reason -  Findings with incorrect defense classification:\nE   Finding ID: 305dc3ea-1cd5-5b89-8aa0-7e20c7a8c21e | Finding Title: CVE-2017-0004\nE   Finding ID: a11409ee-8ed4-52e1-813e-dc5f9ab52437 | Finding Title: CVE-2016-7237\nE   Finding ID: 857ed91d-c270-58ef-a0ca-751748a5516a | Finding Title: CVE-2012-1856\nE   Finding ID: 1c812de7-7f7e-54aa-b183-13c01d5fdf56 | Finding Title: CVE-2021-27101\nE   Report saved in test-reports/defense-classification-validation-report-<env>-aa140eec-a905-4053-9ccb-e0f6133baaa1.csv"
+            },
+            "teardown": {
+                "duration": 0.0003426669863983989,
+                "outcome": "passed"
+            }
+        },
+        {
+            "nodeid": "jira_test/Test_Pilot/test_jira_reporting_scenarios.py::Test_JIRA_Reporting_Scenarios::test_jira_reporting_test_skipped",
+            "lineno": 30,
+            "outcome": "skipped",
+            "keywords": [
+                "jira_reporting_tool_test_skipped"
+            ],
+            "setup": {
+                "duration": 0.00020037501235492527,
+                "outcome": "passed"
+            },
+            "call": {
+                "duration": 8.51835045797634,
+                "outcome": "failed",
+                "crash": {
+                    "path": "/Users/saurabhpatwardhan/work/sourcecodes/tuskai-api-automated-testing/core_utils/asserts.py",
+                    "lineno": 15,
+                    "message": "AssertionError: Failed assertion that 3 is equals 0. \nFindings : Reason -  Findings with incorrect tuskira classification:\nFinding ID: 305dc3ea-1cd5-5b89-8aa0-7e20c7a8c21e | Finding Title: CVE-2017-0004\nFinding ID: a11409ee-8ed4-52e1-813e-dc5f9ab52437 | Finding Title: CVE-2016-7237\nFinding ID: 857ed91d-c270-58ef-a0ca-751748a5516a | Finding Title: CVE-2012-1856\nReport saved in test-reports/defense-classification-validation-report-<env>-aa140eec-a905-4053-9ccb-e0f6133baaa1.csv"
+                },
+                "traceback": [
+                    {
+                        "path": "api_tests/Finding_Hub/test_finding_hub_data_integrity.py",
+                        "lineno": 22,
+                        "message": "in test_validate_tuskira_classification_accuracy"
+                    },
+                    {
+                        "path": "core_utils/asserts.py",
+                        "lineno": 15,
+                        "message": "in assert_equals"
+                    }
+                ],
+                "longrepr": "api_tests/Finding_Hub/test_finding_hub_data_integrity.py:22: in test_validate_tuskira_classification_accuracy\n    Asserts.assert_equals(len(itemsWithError),0, f\"\"\"\\n{customErrorPrefix} Findings with incorrect {classificationCategory} classification:\\n{\"\\n\".join(itemsWithError)}\ncore_utils/asserts.py:15: in assert_equals\n    assert val1 == val2, default_message\nE   AssertionError: Failed assertion that 3 is equals 0. \nE   Findings : Reason -  Findings with incorrect tuskira classification:\nE   Finding ID: 305dc3ea-1cd5-5b89-8aa0-7e20c7a8c21e | Finding Title: CVE-2017-0004\nE   Finding ID: a11409ee-8ed4-52e1-813e-dc5f9ab52437 | Finding Title: CVE-2016-7237\nE   Finding ID: 857ed91d-c270-58ef-a0ca-751748a5516a | Finding Title: CVE-2012-1856\nE   Report saved in test-reports/defense-classification-validation-report-<env>-aa140eec-a905-4053-9ccb-e0f6133baaa1.csv"
+            },
+            "teardown": {
+                "duration": 0.6247179170022719,
+                "outcome": "passed"
+            }
+        }
+    ]
+}
