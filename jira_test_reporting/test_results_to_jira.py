@@ -8,9 +8,9 @@ from jira import JIRA
 testCreatedOrUpdatedAt = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.000-0700')
 
 
-def load_jira_config():
+def load_third_party_config():
     config = configparser.ConfigParser()
-    config.read('_env_configs/third-party.conf')
+    config.read('_env_configs/third_party.conf')
     return config['DEFAULT']
 
 
@@ -32,18 +32,19 @@ def is_test_description_matching(old_description, new_description):
 
 
 def create_or_update_task(jira, jira_project_key, test_run_id, test_summary, test_description, test_type, test_area, test_run, test_env, test_tags, test_status):
+    jira_custom_fields_map = load_third_party_config()
     issue_dict = {
         'project': {'key': jira_project_key},
         'summary': test_summary,
         'issuetype': {'name': 'Task'},
-        'customfield_10208': {'value': test_env},
-        'customfield_10236': {'value': test_area},
-        'customfield_10301': test_type,
-        'customfield_10205': test_run,
+        jira_custom_fields_map['jira_field_id_test_env']: {'value': test_env},
+        jira_custom_fields_map['jira_field_id_test_area']: {'value': test_area},
+        jira_custom_fields_map['jira_field_id_test_type']: test_type,
+        jira_custom_fields_map['jira_field_id_test_run_name']: test_run,
         'description': test_description,
-        'customfield_10202': test_tags,
-        'customfield_10235': {'value': test_status},
-        'customfield_10269': test_run_id,
+        jira_custom_fields_map['jira_field_id_test_tags']: test_tags,
+        jira_custom_fields_map['jira_field_id_test_status']: {'value': test_status},
+        jira_custom_fields_map['jira_field_id_test_run_id']: test_run_id,
     }
     test_run_summary = f"Test Name: {test_area} | {test_summary} | Test Run ID: {test_run_id}"
     existing_test_search_query = f"""project = {jira_project_key} AND "Test Run[Short text]" ~ "\\\"{test_run}\\\"" AND type = Task AND "test environment[Dropdown]" = {test_env} AND "Test Area[Dropdown]" = "{test_area}" AND summary ~ "\\\"{test_summary}\\\"" ORDER BY createdDate DESC"""
@@ -79,7 +80,7 @@ def parse_pytest_report(report_path):
 
 
 def process_test_report(report_path, test_run, test_env, test_run_id):
-    third_party_config = load_jira_config()
+    third_party_config = load_third_party_config()
     jira = connect_to_jira(third_party_config)
     jira_project_key = third_party_config['jira_project_key']
     report = parse_pytest_report(report_path)

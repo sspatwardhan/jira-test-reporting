@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "jira_test_reporting"
-version = "1.0.1"
+version = "1.1.1"
 authors = [
   { name = "Saurabh Patwardhan", email = "patwardhansaurabhs@gmail.com" },
 ]
@@ -21,6 +21,10 @@ classifiers = [
   "Programming Language :: Python :: 3",
   "Operating System :: OS Independent",
 ]
+
+[project.urls]
+Source = "https://github.com/sspatwardhan/jira-test-reporting"
+Issues = "https://github.com/sspatwardhan/jira-test-reporting/issues"
 
 [project.scripts]
 jira_test_reporting = "jira_test_reporting.test_results_processor:main"

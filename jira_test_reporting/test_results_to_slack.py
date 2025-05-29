@@ -8,7 +8,7 @@ from datetime import datetime
 
 def load_slack_config():
     config = configparser.ConfigParser()
-    config.read('_env_configs/third-party.conf')
+    config.read('_env_configs/third_party.conf')
     return config['DEFAULT']
 
 
