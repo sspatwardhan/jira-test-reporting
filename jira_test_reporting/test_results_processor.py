@@ -1,7 +1,7 @@
 import argparse
 import uuid
-from test_results_to_jira import process_test_report
-from test_results_to_slack import send_slack_notification
+from .test_results_to_jira import process_test_report
+from .test_results_to_slack import send_slack_notification
 
 
 def get_args():

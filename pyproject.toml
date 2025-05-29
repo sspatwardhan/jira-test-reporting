@@ -1,19 +1,26 @@
-[project]
-name = "Jira Test Reporting"
-version = "1.0.0"
-authors = [
-  { name="Saurabh Patwardhan", email="saurabhpatwardhan@outlook.com" },
-]
-description = "Report test results as Jira Tasks and notify over Slack - mainly for automated tests"
-readme = "README.md"
-requires-python = ">=3.9"
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "Operating System :: OS Independent",
-]
-license = "MIT"
-license-files = ["LICEN[CS]E*"]
+[build-system]
+requires = ["setuptools >= 80.0.9"]
+build-backend = "setuptools.build_meta"
 
-[project.urls]
-Homepage = "https://github.com/pypa/sampleproject"
-Issues = "https://github.com/pypa/sampleproject/issues"
+[project]
+name = "jira_test_reporting"
+version = "1.0.1"
+authors = [
+  { name = "Saurabh Patwardhan", email = "patwardhansaurabhs@gmail.com" },
+]
+description = "A utility to report pytest results to Jira and Slack"
+readme = "README.md"
+license-files = ["LICEN[CS]E*"]
+requires-python = ">=3.12"
+dependencies = [
+    "requests>=2.32.3",
+    "configparser>=7.1.0",
+    "jira>=3.8.0"
+]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+]
+
+[project.scripts]
+jira_test_reporting = "jira_test_reporting.test_results_processor:main"

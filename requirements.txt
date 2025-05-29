@@ -1,8 +1,3 @@
-boto3==1.35.39
-clickhouse_connect==0.8.9
-decorator==5.1.1
-requests>=2.32.3
-configparser>=7.1.0
-pytest-json-report>=1.5.0
-jira>=3.8.0
-snowflake-connector-python==3.15.0
+requests
+configparser
+jira

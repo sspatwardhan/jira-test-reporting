@@ -1,0 +1,4 @@
+dist
+.venv
+__pycache__
+jira_test_reporting.egg-info

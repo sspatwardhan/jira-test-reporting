@@ -15,7 +15,7 @@ def load_jira_config():
 
 
 def connect_to_jira(config):
-    options = {'jira_host_url': config['jira_host_url']}
+    options = {'server': config['jira_host_url']}
     return JIRA(options, basic_auth=(config['jira_username'], config['jira_password']))
 
 
@@ -69,8 +69,13 @@ def create_or_update_task(jira, jira_project_key, test_run_id, test_summary, tes
 
 
 def parse_pytest_report(report_path):
-    with open(report_path, 'r') as file:
-        return json.load(file)
+    try:
+        with open(report_path, 'r') as file:
+            return json.load(file)
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Report file {report_path} not found")
+    except json.JSONDecodeError:
+        raise ValueError(f"Invalid JSON in report file {report_path}")
 
 
 def process_test_report(report_path, test_run, test_env, test_run_id):
