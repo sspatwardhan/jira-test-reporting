@@ -6,6 +6,7 @@ from datetime import datetime
 from jira import JIRA
 
 testCreatedOrUpdatedAt = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.000-0700')
+regression_label = "Regression"
 
 
 def load_third_party_config():
@@ -29,6 +30,31 @@ def is_test_description_matching(old_description, new_description):
     new_description_hash = hashlib.sha1(
         str(new_description_filtered).encode()).hexdigest()
     return old_description_hash == new_description_hash
+
+
+def get_updated_test_tags_wrt_regression(previous_test_status: str, current_test_status: str, previous_test_tags: list):
+    updated_test_tags = previous_test_tags
+    # print(
+    #     f"Inputs: previous_test_status='{previous_test_status}', current_test_status='{current_test_status}', previous_test_tags={previous_test_tags}")
+    try:
+        # if the test was passing earlier and it has failed now then its a regression
+        if previous_test_status == "Passed" and current_test_status == "Failed":
+            # print("Condition met: Test went from Passed to Failed, adding Regression")
+            updated_test_tags.append(regression_label)
+        # if the test was failing earlier and it has passed now then its not a regression
+        elif previous_test_status == "Failed" and current_test_status == "Passed":
+            updated_test_tags.remove(regression_label)
+        # if the test is passing and if it still has regression label, just remove it
+        elif current_test_status == "Passed" and regression_label in updated_test_tags:
+            updated_test_tags.remove(regression_label)
+        # if previous and current status matches and it was reported as a regression then its no more a regression
+        elif previous_test_status == current_test_status and regression_label in updated_test_tags:
+            updated_test_tags.remove(regression_label)
+    except ValueError:
+        pass
+
+    # print(f"Updated tags: {updated_test_tags} ")
+    return list(set(updated_test_tags))
 
 
 def create_or_update_task(jira, jira_project_key, test_run_id, test_summary, test_description, test_type, test_area, test_run, test_env, test_tags, test_status):
@@ -57,12 +83,18 @@ def create_or_update_task(jira, jira_project_key, test_run_id, test_summary, tes
         return test_id
     else:
         existing_test_id = jira.issue(existing_test[0])
+        # Update the test tags wrt. regression
+        issue_dict[jira_custom_fields_map['jira_field_id_test_tags']] = get_updated_test_tags_wrt_regression(previous_test_status=str(getattr(
+            existing_test_id.fields, jira_custom_fields_map['jira_field_id_test_status'], None)), current_test_status=test_status, previous_test_tags=getattr(existing_test_id.fields, jira_custom_fields_map['jira_field_id_test_tags'], None))
+        # determine whether test failed because of a new reason
         if not is_test_description_matching(old_description=existing_test_id.fields.description, new_description=test_description):
             print(
                 f"New failure identified for Test: {test_run_summary} | Test ID: {existing_test[0]}. Moving older description to comments.")
             jira.add_comment(
-                existing_test[0], f"\nPreviously with Test Run ID: {existing_test_id.fields.customfield_10269}\n{existing_test_id.fields.description}")
+                existing_test[0], f"\nPreviously with Test Run ID: {existing_test_id.fields.jira_custom_fields_map['jira_field_id_test_run_id']}\n{existing_test_id.fields.description}")
+        # Update the test details
         existing_test_id.update(fields=issue_dict)
+        # Transition jira task to respective status
         jira.transition_issue(existing_test_id, test_status)
         print(
             f"Updated Test: {test_run_summary} | Test ID: {existing_test[0]}")
@@ -85,7 +117,7 @@ def process_test_report(report_path, test_run, test_env, test_run_id):
     jira_project_key = third_party_config['jira_project_key']
     report = parse_pytest_report(report_path)
     eligiblePytestMarkers = ['classificationAccuracyTest',
-                             'dataIntegrityTest', 'skipOnLocal', 'graphql', 'RestAPIs', 'only']
+                             'dataIntegrityTest', 'skipOnLocal', 'graphql', 'RestAPIs', 'test_tag', regression_label]
     test_type = report['tests'][0]['nodeid'].split('/')[0]
     build_url = f"{os.environ.get('BITBUCKET_GIT_HTTP_ORIGIN')}/pipelines/results/{os.environ.get('BITBUCKET_BUILD_NUMBER')}" if os.environ.get(
         "BITBUCKET_GIT_HTTP_ORIGIN") else "Not Applicable"

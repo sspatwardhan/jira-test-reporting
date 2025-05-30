@@ -61,8 +61,11 @@ The script uses the following default fields in Jira tasks:
   The values for the fields above will be fetched directly from the json_report
   New jira tasks will be created for non-existing tests
   Existing tests will be updated
-
 ```
+
+
+## Jira Tests Example
+
 
 ## Slack Notification Example
 ```

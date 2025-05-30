@@ -17,7 +17,7 @@
             "lineno": 30,
             "outcome": "passed",
             "keywords": [
-                "jira_reporting_tool_test_1"
+                "test_tag"
             ],
             "setup": {
                 "duration": 2.0469269170134794,
@@ -37,7 +37,7 @@
             "lineno": 30,
             "outcome": "failed",
             "keywords": [
-                "jira_reporting_tool_test_1"
+                "test_tag"
             ],
             "setup": {
                 "duration": 1.582380292005837,
@@ -75,7 +75,7 @@
             "lineno": 30,
             "outcome": "skipped",
             "keywords": [
-                "jira_reporting_tool_test_skipped"
+                "test_tag"
             ],
             "setup": {
                 "duration": 0.00020037501235492527,
