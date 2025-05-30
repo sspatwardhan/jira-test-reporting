@@ -23,7 +23,8 @@ Please note we have a code of conduct, please follow it in all your interactions
 4. Make the code changes
 5. To test it locally
     1. Run `uv pip install -e .`
-    2. Ensure parameters in `_env_configs/third_party.conf` has valid values
+    2. Ensure parameters in `_env_configs/third_party.conf` has valid values as mentioned in [Important Instructions](https://github.com/sspatwardhan/jira-test-reporting?tab=readme-ov-file#important-instructions)
+    3. Ensure `Repository Variables` are set up (as in step #2 mentioned in the [standalone setup](https://github.com/sspatwardhan/jira-test-reporting?tab=readme-ov-file#standalone))
     3. Run the script with command-line arguments to process a pytest report:
     ```bash
     python -m jira_test_reporting.test_results_processor --test-env=Dev --test-run=Release-X --report=sample-test-reports/pytest_report.json

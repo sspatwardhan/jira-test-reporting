@@ -15,11 +15,6 @@ def load_third_party_config():
     return config['DEFAULT']
 
 
-def connect_to_jira(config):
-    options = {'server': config['jira_host_url']}
-    return JIRA(options, basic_auth=(config['jira_username'], config['jira_password']))
-
-
 def is_test_description_matching(old_description, new_description):
     old_description_filtered = [line for line in old_description.split(
         '\n') if not "Build Number" in line and not "Build URL" in line]
@@ -113,17 +108,20 @@ def parse_pytest_report(report_path):
 
 
 def process_test_report(report_path, test_run, test_env, test_run_id):
-    third_party_config = load_third_party_config()
-    jira = connect_to_jira(third_party_config)
-    jira_project_key = third_party_config['jira_project_key']
+    # Following values need to be set as either environment variables OR repository variables if you're running this in CI/CD
+    jira = JIRA({'server': os.environ.get('jira_host_url')}, basic_auth=(
+        os.environ.get('jira_username'), os.environ.get('jira_password')))
+    jira_project_key = os.environ.get('jira_project_key')
     report = parse_pytest_report(report_path)
     eligiblePytestMarkers = ['classificationAccuracyTest',
                              'dataIntegrityTest', 'skipOnLocal', 'graphql', 'RestAPIs', 'test_tag', regression_label]
     test_type = report['tests'][0]['nodeid'].split('/')[0]
-    build_url = f"{os.environ.get('BITBUCKET_GIT_HTTP_ORIGIN')}/pipelines/results/{os.environ.get('BITBUCKET_BUILD_NUMBER')}" if os.environ.get(
-        "BITBUCKET_GIT_HTTP_ORIGIN") else "Not Applicable"
-    test_description_footer = f"\n*Build Number:* {os.environ.get('BITBUCKET_BUILD_NUMBER', 'Not Applicable')}\n*Build URL:* {build_url}\n"
-
+    # this configuration will be picked up from _env_config/third_party.conf
+    third_party_config = load_third_party_config()
+    build_url = f"{os.environ.get(third_party_config['scm_url_variable'])}/pipelines/results/{os.environ.get(third_party_config['scm_build_number_variable'])}" if os.environ.get(
+        third_party_config['scm_url_variable']) else "Not Applicable"
+    test_description_footer = f"\n*Build Number:* {os.environ.get(third_party_config['scm_build_number_variable'], 'Not Applicable')}\n*Build URL:* {build_url}\n"
+    # Start processing every result
     for test in report['tests']:
         test_tags = []
         nodeid = test['nodeid'].replace('[', '-').replace(']', '')

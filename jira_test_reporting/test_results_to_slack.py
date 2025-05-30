@@ -1,15 +1,9 @@
-import configparser
 import json
 import os
 import requests
 import string
 from datetime import datetime
-
-
-def load_slack_config():
-    config = configparser.ConfigParser()
-    config.read('_env_configs/third_party.conf')
-    return config['DEFAULT']
+from .test_results_to_jira import load_third_party_config
 
 
 def send_slack_message(slack_webhook_url, message_blocks):
@@ -24,11 +18,11 @@ def send_slack_message(slack_webhook_url, message_blocks):
 
 
 def send_slack_notification(report, test_run, test_env, test_run_id):
-    third_party_config = load_slack_config()
+    third_party_config = load_third_party_config()
     test_type = report['tests'][0]['nodeid'].split('/')[0]
-    build_url = f"{os.environ.get('BITBUCKET_GIT_HTTP_ORIGIN')}/pipelines/results/{os.environ.get('BITBUCKET_BUILD_NUMBER')}" if os.environ.get(
-        "BITBUCKET_GIT_HTTP_ORIGIN") else "Not Applicable"
-    report_url = f"https://deepinsight-team.atlassian.net/issues/?jql=project%20%3D%20TMGT%20AND%20%22trid%5BShort%20text%5D%22%20~%20%22{test_run_id}%22%20AND%20%22test%20status%5BDropdown%5D%22%20IN%20(Failed%2C%20Skipped)%20ORDER%20BY%20status%20ASC"
+    build_url = f"{os.environ.get(third_party_config['scm_url_variable'])}/pipelines/results/{os.environ.get(third_party_config['scm_build_number_variable'])}" if os.environ.get(
+        third_party_config['scm_url_variable']) else "Not Applicable"
+    report_url = f"{os.environ.get('jira_host_url')}/issues/?jql=project%20%3D%20TMGT%20AND%20%22trid%5BShort%20text%5D%22%20~%20%22{test_run_id}%22%20AND%20%22test%20status%5BDropdown%5D%22%20IN%20(Failed%2C%20Skipped)%20ORDER%20BY%20status%20ASC"
 
     blocks = [
         {
@@ -78,7 +72,7 @@ def send_slack_notification(report, test_run, test_env, test_run_id):
         }
     ]
 
-    slack_webhook_url = third_party_config['slack_test_webhook'] if test_run != 'Daily Run' else third_party_config[
-        'slack_dev_channel_webhook' if test_env.lower() == 'dev' else 'slack_prod_channel_webhook']
+    slack_webhook_url = os.environ.get('slack_test_webhook') if test_run != 'Daily Run' else os.environ.get(
+        'slack_dev_channel_webhook') if test_env.lower() == 'dev' else os.environ.get('slack_prod_channel_webhook')
     send_slack_message(slack_webhook_url=slack_webhook_url,
                        message_blocks=blocks)

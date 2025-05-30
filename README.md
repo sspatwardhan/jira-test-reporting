@@ -32,13 +32,9 @@ The script uses the following custom fields in Jira tasks:
 - Similarly, in the pytest json report check block ```"outcome": "passed"```
 -- ```Passed``` should be pre-populated under the Test Status field options. For this field, the values should be pre-populate in the title case.
 - Also, make sure that in your jira project, the issue type "Task" has default fields Description and Status
-- In the caller projetct, create a `_env_configs/third_party.conf` file with the following structure:
+- In the caller projetct, create `_env_configs/third_party.conf` file with the following structure:
     ```ini
     [DEFAULT]
-    jira_host_url = https://my-jira-team.atlassian.net
-    jira_username = whoami@my-jira-team.com
-    jira_password = XXXXXXXXXXXXXXXXXXXXX
-    jira_project_key = TMGT
     jira_field_id_test_env = customfield_10208
     jira_field_id_test_area = customfield_10236
     jira_field_id_test_type = customfield_10301
@@ -46,12 +42,11 @@ The script uses the following custom fields in Jira tasks:
     jira_field_id_test_tags = customfield_10202
     jira_field_id_test_status = customfield_10235
     jira_field_id_test_run_id = customfield_10269
-    slack_dev_channel_webhook = https://hooks.slack.com/services/AAAAAA/BBBBBBB/CCCCCCCCC
-    slack_prod_channel_webhook = https://hooks.slack.com/services/AAAAAA/BBBBBBB/CCCCCCCCC
-    slack_test_webhook = https://hooks.slack.com/services/AAAAAA/BBBBBBB/CCCCCCCCC
+    scm_url_variable = BITBUCKET_GIT_HTTP_ORIGIN
+    scm_build_number_variable = BITBUCKET_BUILD_NUMBER
     ```
 
-The script uses the following default fields in Jira tasks:
+The script also uses the following default fields in Jira tasks:
 - `project` - reflects ```jira_project_key```
 - `summary` - test_name
 - `description` - failure or passing description
@@ -88,12 +83,24 @@ Execution Date: May-23-2025
 ## Usage
 ### Standalone
 1. Ensure parameters in `_env_configs/third_party.conf` has valid values
-2. Run the script with command-line arguments to process a pytest report:
+2. Export environment variables as follows
+```
+export jira_host_url=https://my-jira-team.atlassian.net
+export jira_username=whoami@my-jira-team.com
+export jira_password=XXXXXXXXXXXXXXXXXXXXX
+export jira_project_key=TMGT
+export slack_dev_channel_webhook=https://hooks.slack.com/services/AAAAAA/BBBBBBB/CCCCCCCCC
+export slack_prod_channel_webhook=https://hooks.slack.com/services/AAAAAA/BBBBBBB/CCCCCCCCC
+export slack_test_webhook=https://hooks.slack.com/services/AAAAAA/BBBBBBB/CCCCCCCCC
+```
+3. Run the script with command-line arguments to process a pytest report:
 ```bash
-python -m jira_test_reporting.test_results_processor --test-env=Dev --test-run=Release-X --report=sample-test-reports/pytest_report.json
+python -m jira_test_reporting.test_results_processor --test-env=Dev --test-run=Release-X --report=sample-test-reports/pytest_report.json --notify-slack=yes
 ```
 ### CI-CD hooked example (this copies required files into your test_automation directory)
-Assuming you have configured ```bitbucket-pipeline``` or a shell script in the caller project to execute the tests.
+Assuming you have
+- set `Repository Variables` (as in step #2 mentioned in the standalone setup above) in your scm tool. (How to: [bitbcket](https://support.atlassian.com/bitbucket-cloud/docs/variables-and-secrets/), [github](https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/store-information-in-variables))
+- configured pipeline in your SCM tool or a shell script in the caller project to execute the tests.
 ```bash
 #!/bin/bash
 # -----------------------------------------------------------------------------------------
