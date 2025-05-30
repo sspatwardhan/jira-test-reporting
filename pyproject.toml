@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools >= 80.0.9"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jira_test_reporting"
+version = "1.1.5"
+authors = [
+  { name = "Saurabh Patwardhan", email = "patwardhansaurabhs@gmail.com" },
+]
+description = "A utility to report pytest results to Jira and Slack"
+readme = "README.md"
+license-files = ["LICEN[CS]E*"]
+requires-python = ">=3.12"
+dependencies = [
+    "requests>=2.32.3",
+    "configparser>=7.1.0",
+    "jira>=3.8.0"
+]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+]
+
+[project.urls]
+Source = "https://github.com/sspatwardhan/jira-test-reporting"
+Issues = "https://github.com/sspatwardhan/jira-test-reporting/issues"
+Contribute = "https://github.com/sspatwardhan/jira-test-reporting/blob/main/CONTRIBUTE.md"
+
+[project.scripts]
+jira_test_reporting = "jira_test_reporting.test_results_processor:main"
