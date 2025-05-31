@@ -1,4 +1,4 @@
-# Report test results as Jira tasks and notify Slack - mainly for automated tests
+## Description
 This repository contains utility scripts for
 - reporting automated test results Jira
 - sending a slack notification with proper stats and jira url that shows failed tests in the current test run id (trid)
@@ -6,16 +6,15 @@ specifically designed for use in CI/CD pipelines such as Bitbucket Pipelines.
 
 ## Prerequisites
 - **Python**: Version 3.12 or higher.
-- **Json Report**: Calling project should generate json report like this - ```pytest -s --tb=no --no-header api_tests --testenv="$TEST_ENV" --json-report -v --json-report-indent=4 --json-report-omit collectors setup teardown --json-report-file=./test-reports/pytest_report.json```
-- **Jira Access**: A Jira instance with API token authentication.
-- **Slack Webhook**: A Slack webhook URL for sending notifications.
+- **Json Report**: Calling project should generate json report. How to [create pytest json report](https://pypi.org/project/pytest-json-report/)
+- **Jira Access**: A Jira instance with API token authentication. How to [create jira api token](https://id.atlassian.com/manage-profile/security/api-tokens)
+- **Slack Webhook**: A Slack webhook URL for sending notifications. How to [create slack incoming webhook](https://api.slack.com/messaging/webhooks#getting_started)
 - **Configuration File**: A `_env_configs/third_party.conf` file with Jira and Slack settings.
 
 ## Installation
 ```pip install jira-test-reporting```
 
-## Configuration
-Jira project preperation
+## Jira project preperation
 ### Create new Jira project and configure issue type "Task" with following fields
 The script uses the following custom fields in Jira tasks:
 - Test Environment : Field Type - Dropdown. ```Important - Pre-populate the values```
@@ -58,12 +57,11 @@ The script also uses the following default fields in Jira tasks:
   Existing tests will be updated
 ```
 
-
-## Jira Reported Tests Example
+## Examples
+### Jira Reported Tests Example
 ![image](https://github.com/user-attachments/assets/525b2aa7-99a8-4be9-8377-dbd260009230)
 
-
-## Slack Notification Example
+### Slack Notification Example
 ```
 API Test Results
 ──────────────
@@ -108,7 +106,7 @@ Assuming you have
 # -----------------------------------------------------------------------------------------
 .. pip install -r requirements.txt > /dev/null 2>&1
 .. test execution code here
-..
+.. pytest -s --tb=no --no-header api_tests --testenv="$TEST_ENV" --json-report -v --json-report-indent=4 --json-report-omit collectors setup teardown --json-report-file=./test-reports/pytest_report.json
 # JUST ADD FOLLOWING CODE BLOCK to report the issues
 # -----------------------------------------------------------------------------------------
 # Report test results to Jira
@@ -121,11 +119,12 @@ else
 fi
 ```
 
-
 ### Arguments
 
-- `--test-env`: Test environment (default: `Dev`). Example: `Dev`, `Prod`.
-- `--test-run`: Test run identifier (default: `Daily Run`). Example: `Release-X`, `Regression-Test`.
+- `--test-env`: Test environment (default: `Dev`). Examples: `--test-env=dev`, `--test-env=stage`.
+- `--test-run`: Test run identifier (default: `Daily Run`). Examples: `--test-run=Release-X`, `--test-run="Regression Tests"`.
+- `--report`: Test report file path (default: `test-reports/pytest_report.json`). Examples: `--report=my-test-reports/my-pytest_report.json`
+- `--notify-slack`: Whether or not you want to send out a notification to slack (default: `yes`). Examples: `--notify-slack=yes`, `--notify-slack=no`
 
 ## Troubleshooting
 

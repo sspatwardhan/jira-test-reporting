@@ -6,7 +6,7 @@ from datetime import datetime
 from jira import JIRA
 
 testCreatedOrUpdatedAt = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.000-0700')
-regression_label = "Regression"
+regression_tag = "Regression"
 
 
 def load_third_party_config():
@@ -35,16 +35,16 @@ def get_updated_test_tags_wrt_regression(previous_test_status: str, current_test
         # if the test was passing earlier and it has failed now then its a regression
         if previous_test_status == "Passed" and current_test_status == "Failed":
             # print("Condition met: Test went from Passed to Failed, adding Regression")
-            updated_test_tags.append(regression_label)
+            updated_test_tags.append(regression_tag)
         # if the test was failing earlier and it has passed now then its not a regression
         elif previous_test_status == "Failed" and current_test_status == "Passed":
-            updated_test_tags.remove(regression_label)
+            updated_test_tags.remove(regression_tag)
         # if the test is passing and if it still has regression label, just remove it
-        elif current_test_status == "Passed" and regression_label in updated_test_tags:
-            updated_test_tags.remove(regression_label)
+        elif current_test_status == "Passed" and regression_tag in updated_test_tags:
+            updated_test_tags.remove(regression_tag)
         # if previous and current status matches and it was reported as a regression then its no more a regression
-        elif previous_test_status == current_test_status and regression_label in updated_test_tags:
-            updated_test_tags.remove(regression_label)
+        elif previous_test_status == current_test_status and regression_tag in updated_test_tags:
+            updated_test_tags.remove(regression_tag)
     except ValueError:
         pass
 
@@ -114,7 +114,7 @@ def process_test_report(report_path, test_run, test_env, test_run_id):
     jira_project_key = os.environ.get('jira_project_key')
     report = parse_pytest_report(report_path)
     eligiblePytestMarkers = ['classificationAccuracyTest',
-                             'dataIntegrityTest', 'skipOnLocal', 'graphql', 'RestAPIs', 'test_tag', regression_label]
+                             'dataIntegrityTest', 'skipOnLocal', 'graphql', 'RestAPIs', 'test_tag', regression_tag]
     test_type = report['tests'][0]['nodeid'].split('/')[0]
     # this configuration will be picked up from _env_config/third_party.conf
     third_party_config = load_third_party_config()
